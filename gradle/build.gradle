@@ -14,13 +14,45 @@
  * limitations under the License.
  */
 
+def versions = file('distribution.properties').withInputStream {
+    Properties props = new Properties()
+    props.load(it)
+    return props
+}
+
 group = 'com.asakusafw'
-version = '0.9.0-SNAPSHOT'
+version = versions.distribution
+
+defaultTasks 'clean', 'build', 'install'
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+
+configurations {
+    deployerJars
+}
+
+repositories {
+    if (project.hasProperty('mavenLocal')) {
+        logger.lifecycle 'enabling maven local repository'
+        mavenLocal()
+    }
+    mavenCentral()
+    maven { url 'http://asakusafw.s3.amazonaws.com/maven/releases' }
+    maven { url 'http://asakusafw.s3.amazonaws.com/maven/snapshots' }
+}
+
+dependencies {
+    compile gradleApi()
+    compile group: 'com.asakusafw', name: 'asakusa-gradle-plugins', version: System.getProperty('sdk', versions.sdk)
+    compile group: 'com.asakusafw.spark', name: 'asakusa-spark-gradle', version: System.getProperty('spark', versions.spark)
+    compile group: 'com.asakusafw.m3bp', name: 'asakusa-m3bp-gradle', version: System.getProperty('m3bp', versions.m3bp)
+    compile group: 'com.asakusafw.vanilla', name: 'asakusa-vanilla-gradle', version: System.getProperty('vanilla', versions.vanilla)
+
+    deployerJars 'org.springframework.build:aws-maven:5.0.0.RELEASE'
+}
 
 tasks.withType(Wrapper) {
     jarFile file('.buildtools/gradlew.jar')
