@@ -23,7 +23,7 @@ def versions = file('distribution.properties').withInputStream {
 group = 'com.asakusafw'
 version = versions.distribution
 
-defaultTasks 'clean', 'build', 'install'
+defaultTasks 'clean', 'build', 'install', 'assembleTemplates'
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -52,6 +52,56 @@ dependencies {
     compile group: 'com.asakusafw.vanilla', name: 'asakusa-vanilla-gradle', version: System.getProperty('vanilla', versions.vanilla)
 
     deployerJars 'org.springframework.build:aws-maven:5.0.0.RELEASE'
+}
+
+
+task assembleTemplates {
+    description 'assembles application project templates'
+}
+
+file('src/templates').eachDirMatch({ it.startsWith 'asakusa-' }) { File source ->
+    String projectName = source.name
+    File output = new File(buildDir, "templates/${projectName}")
+    String generateTaskName = "generate_${projectName}"
+    String processTaskName = "process_${projectName}"
+    String assembleTaskName = "assemble_${projectName}"
+    tasks.create(name: generateTaskName, type: Copy) {
+        doFirst {
+            delete output
+        }
+        from source
+        from file('src/templates/common')
+        filesMatching('build.gradle') {
+            expand gradlePluginVersion: version,
+                mavenRepoType: version.endsWith('SNAPSHOT') ? 'snapshots' : 'releases'
+        }
+        into output
+    }
+    tasks.create(name: processTaskName, type: GradleBuild, dependsOn: generateTaskName) {
+        dir output
+        file('src/templates/init.d').eachFileMatch({ it.endsWith('.gradle') }) {
+            startParameter.addInitScript it
+        }
+        doLast {
+            mkdir new File(output, 'src/main/java')
+            mkdir new File(output, 'src/main/resources')
+            mkdir new File(output, 'src/main/dmdl')
+            mkdir new File(output, 'src/main/libs')
+            mkdir new File(output, 'src/test/java')
+        }
+        tasks = ['asakusaUpgrade']
+    }
+    tasks.create(name: assembleTaskName, type: Tar, dependsOn: processTaskName) {
+        from (output) {
+            exclude "build"
+            exclude ".gradle"
+            into projectName
+        }
+        destinationDir buildDir
+        compression Compression.GZIP
+        archiveName "${projectName}-${version}.tar.gz"
+    }
+    assembleTemplates.dependsOn assembleTaskName
 }
 
 tasks.withType(Wrapper) {
