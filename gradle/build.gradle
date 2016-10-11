@@ -20,7 +20,7 @@ def versions = file('distribution.properties').withInputStream {
     return props
 }
 
-group = 'com.asakusafw'
+group = 'com.asakusafw.gradle'
 version = versions.distribution
 
 defaultTasks 'clean', 'build', 'install', 'assembleTemplates'
