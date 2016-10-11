@@ -54,6 +54,15 @@ dependencies {
     deployerJars 'org.springframework.build:aws-maven:5.0.0.RELEASE'
 }
 
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            configuration = project.configurations.deployerJars
+            repository id: 'com.asakusafw.releases', url: 's3://asakusafw/maven/releases'
+            snapshotRepository id: 'com.asakusafw.snapshots', url: 's3://asakusafw/maven/snapshots'
+        }
+    }
+}
 
 task assembleTemplates {
     description 'assembles application project templates'
