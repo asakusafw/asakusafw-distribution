@@ -5,7 +5,7 @@ buildscript {
         maven { url 'http://asakusafw.s3.amazonaws.com/maven/${mavenRepoType}' }
     }
     dependencies {
-        classpath group: 'com.asakusafw', name: 'asakusa-distribution', version: '${gradlePluginVersion}'
+        classpath group: 'com.asakusafw.gradle', name: 'asakusa-distribution', version: '${gradlePluginVersion}'
     }
 }
 
