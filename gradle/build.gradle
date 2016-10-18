@@ -51,6 +51,10 @@ dependencies {
     compile group: 'com.asakusafw.m3bp', name: 'asakusa-m3bp-gradle', version: System.getProperty('m3bp', versions.m3bp)
     compile group: 'com.asakusafw.vanilla', name: 'asakusa-vanilla-gradle', version: System.getProperty('vanilla', versions.vanilla)
 
+    testCompile gradleTestKit()
+    testCompile group: 'com.asakusafw', name: 'asakusa-gradle-plugins', version: System.getProperty('sdk', versions.sdk), classifier: 'tests'
+    testCompile 'junit:junit:4.12'
+
     deployerJars 'org.springframework.build:aws-maven:5.0.0.RELEASE'
 }
 
