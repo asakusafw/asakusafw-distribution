@@ -23,6 +23,7 @@ import org.junit.rules.TestName
 
 import com.asakusafw.gradle.plugins.AsakusafwBasePlugin
 import com.asakusafw.gradle.plugins.GradleTestkitHelper
+import com.asakusafw.lang.gradle.plugins.AsakusafwLangPlugin
 import com.asakusafw.m3bp.gradle.plugins.AsakusafwM3bpPlugin
 import com.asakusafw.spark.gradle.plugins.AsakusafwSparkPlugin
 import com.asakusafw.vanilla.gradle.plugins.AsakusafwVanillaPlugin
@@ -83,10 +84,12 @@ class AsakusaUpgradeTest {
     private void doUpgrade(String version) {
         Set<File> classpath = GradleTestkitHelper.toClasspath(
             AsakusafwBasePlugin,
+            AsakusafwLangPlugin,
             AsakusafwSparkPlugin,
             AsakusafwM3bpPlugin,
             AsakusafwVanillaPlugin,
             'META-INF/gradle-plugins/asakusafw-sdk.properties',
+            'META-INF/gradle-plugins/asakusafw-lang.properties',
             'META-INF/gradle-plugins/asakusafw-spark.properties',
             'META-INF/gradle-plugins/asakusafw-m3bp.properties',
             'META-INF/gradle-plugins/asakusafw-vanilla.properties')
