@@ -25,6 +25,7 @@ import com.asakusafw.gradle.plugins.AsakusafwBasePlugin
 import com.asakusafw.gradle.plugins.GradleTestkitHelper
 import com.asakusafw.lang.gradle.plugins.AsakusafwLangPlugin
 import com.asakusafw.m3bp.gradle.plugins.AsakusafwM3bpPlugin
+import com.asakusafw.mapreduce.gradle.plugins.AsakusafwMapReducePlugin
 import com.asakusafw.spark.gradle.plugins.AsakusafwSparkPlugin
 import com.asakusafw.vanilla.gradle.plugins.AsakusafwVanillaPlugin
 
@@ -88,14 +89,16 @@ class AsakusaUpgradeTest {
             AsakusafwSparkPlugin,
             AsakusafwM3bpPlugin,
             AsakusafwVanillaPlugin,
+            AsakusafwMapReducePlugin,
             'META-INF/gradle-plugins/asakusafw-sdk.properties',
             'META-INF/gradle-plugins/asakusafw-lang.properties',
             'META-INF/gradle-plugins/asakusafw-spark.properties',
             'META-INF/gradle-plugins/asakusafw-m3bp.properties',
-            'META-INF/gradle-plugins/asakusafw-vanilla.properties')
+            'META-INF/gradle-plugins/asakusafw-vanilla.properties',
+            'META-INF/gradle-plugins/asakusafw-mapreduce.properties')
         String script = GradleTestkitHelper.getSimpleBuildScript(classpath,
             'asakusafw-sdk', 'asakusafw-organizer',
-            'asakusafw-spark', 'asakusafw-m3bp', 'asakusafw-vanilla')
+            'asakusafw-spark', 'asakusafw-m3bp', 'asakusafw-vanilla', 'asakusafw-mapreduce')
         GradleTestkitHelper.runGradle(projectDir.root, version, script, AsakusafwBasePlugin.TASK_UPGRADE)
     }
 }
