@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import com.asakusafw.integration.AsakusaConfigurator;
 import com.asakusafw.integration.AsakusaProject;
@@ -38,7 +41,20 @@ import com.asakusafw.utils.gradle.ContentsConfigurator;
 /**
  * Test for {@code vanilla}.
  */
+@RunWith(Parameterized.class)
 public class DistributionTest {
+
+    /**
+     * Return the test parameters.
+     * @return the test parameters
+     */
+    @Parameters(name = "use-hadoop:{0}")
+    public static Object[][] getTestParameters() {
+        return new Object[][] {
+            { false },
+            { true },
+        };
+    }
 
     /**
      * project provider.
@@ -48,8 +64,19 @@ public class DistributionTest {
             .withProject(ContentsConfigurator.copy(data("distribution")))
             .withProject(ContentsConfigurator.copy(data("ksv")))
             .withProject(ContentsConfigurator.copy(data("logback-test")))
-            .withProject(AsakusaConfigurator.projectHome())
-            .withProject(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.UNSET_ALWAYS));
+            .withProject(AsakusaConfigurator.projectHome());
+
+    /**
+     * Creates a new instance.
+     * @param useHadoop whether or not the test uses hadoop command
+     */
+    public DistributionTest(boolean useHadoop) {
+        if (useHadoop) {
+            provider.withProject(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.SKIP_IF_UNDEFINED));
+        } else {
+            provider.withProject(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.UNSET_ALWAYS));
+        }
+    }
 
     /**
      * help.
@@ -110,8 +137,7 @@ public class DistributionTest {
      */
     @Test
     public void test() {
-        AsakusaProject project = provider.newInstance("prj")
-                .with(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.UNSET_IF_UNDEFINED));
+        AsakusaProject project = provider.newInstance("prj");
         project.gradle("installAsakusafw", "test");
     }
 
@@ -120,8 +146,7 @@ public class DistributionTest {
      */
     @Test
     public void yaess_vanilla() {
-        AsakusaProject project = provider.newInstance("prj")
-                .with(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.UNSET_IF_UNDEFINED));
+        AsakusaProject project = provider.newInstance("prj");
         doYaess(project, "attachVanillaBatchapps", "vanilla.perf.average.sort");
     }
 
@@ -140,8 +165,7 @@ public class DistributionTest {
      */
     @Test
     public void yaess_m3bp() {
-        AsakusaProject project = provider.newInstance("prj")
-                .with(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.UNSET_IF_UNDEFINED));
+        AsakusaProject project = provider.newInstance("prj");
         doYaess(project, "attachM3bpBatchapps", "m3bp.perf.average.sort");
     }
 
@@ -150,8 +174,7 @@ public class DistributionTest {
      */
     @Test
     public void yaess_mapreduce() {
-        AsakusaProject project = provider.newInstance("prj")
-                .with(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.SKIP_IF_UNDEFINED));
+        AsakusaProject project = provider.newInstance("prj");
         doYaess(project, "attachMapreduceBatchapps", "perf.average.sort");
     }
 
@@ -166,7 +189,6 @@ public class DistributionTest {
         project.getContents().put("var/data/input/file.csv", f -> {
             Files.write(f, Arrays.asList(csv), StandardCharsets.UTF_8);
         });
-
 
         project.getFramework().withLaunch(
                 "yaess/bin/yaess-batch.sh", batchId,
