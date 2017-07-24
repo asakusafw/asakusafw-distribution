@@ -46,14 +46,14 @@ repositories {
 
 dependencies {
     compile gradleApi()
-    compile group: 'com.asakusafw', name: 'asakusa-gradle-plugins', version: System.getProperty('sdk', versions.sdk)
+    compile group: 'com.asakusafw', name: 'asakusa-gradle-plugins', version: System.getProperty('core', versions.core)
     compile group: 'com.asakusafw.spark', name: 'asakusa-spark-gradle', version: System.getProperty('spark', versions.spark)
     compile group: 'com.asakusafw.m3bp', name: 'asakusa-m3bp-gradle', version: System.getProperty('m3bp', versions.m3bp)
     compile group: 'com.asakusafw.vanilla', name: 'asakusa-vanilla-gradle', version: System.getProperty('vanilla', versions.vanilla)
     compile group: 'com.asakusafw.mapreduce', name: 'asakusa-mapreduce-gradle', version: System.getProperty('mapreduce', versions.mapreduce)
 
     testCompile gradleTestKit()
-    testCompile group: 'com.asakusafw', name: 'asakusa-gradle-plugins', version: System.getProperty('sdk', versions.sdk), classifier: 'tests'
+    testCompile group: 'com.asakusafw', name: 'asakusa-gradle-plugins', version: System.getProperty('core', versions.core), classifier: 'tests'
     testCompile 'junit:junit:4.12'
 
     deployerJars 'org.springframework.build:aws-maven:5.0.0.RELEASE'

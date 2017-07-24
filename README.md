@@ -3,7 +3,6 @@
 This project provides a one-stop access of [Asakusa Framework](https://github.com/asakusafw/asakusafw) facilities which includes artifacts of the following repositories:
 
 * [Asakusa Framework](https://github.com/asakusafw/asakusafw)
-* [Asakusa SDK](https://github.com/asakusafw/asakusafw-sdk)
 * [Asakusa on MapReduce](https://github.com/asakusafw/asakusafw-mapreduce)
 * [Asakusa on Spark](https://github.com/asakusafw/asakusafw-spark)
 * [Asakusa on M3BP](https://github.com/asakusafw/asakusafw-m3bp)
