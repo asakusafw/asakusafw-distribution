@@ -39,7 +39,7 @@ import com.asakusafw.utils.gradle.Bundle;
 import com.asakusafw.utils.gradle.ContentsConfigurator;
 
 /**
- * Test for {@code vanilla}.
+ * Test for Asakusa distribution.
  */
 @RunWith(Parameterized.class)
 public class DistributionTest {
@@ -178,6 +178,46 @@ public class DistributionTest {
         doYaess(project, "attachMapreduceBatchapps", "perf.average.sort");
     }
 
+    /**
+     * {@code asakuasfw.sh run} w/ vanilla.
+     */
+    @Test
+    public void workflow_vanilla() {
+        AsakusaProject project = provider.newInstance("prj")
+                .with(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.UNSET_IF_UNDEFINED));
+        runWorkflow(project, "attachVanillaBatchapps", "vanilla.perf.average.sort");
+    }
+
+    /**
+     * {@code asakuasfw.sh run} w/ spark.
+     */
+    @Test
+    public void workflow_spark() {
+        AsakusaProject project = provider.newInstance("prj")
+                .with(AsakusaConfigurator.spark(AsakusaConfigurator.Action.SKIP_IF_UNDEFINED));
+        runWorkflow(project, "attachSparkBatchapps", "spark.perf.average.sort");
+    }
+
+    /**
+     * {@code asakuasfw.sh run} w/ m3bp.
+     */
+    @Test
+    public void workflow_m3bp() {
+        AsakusaProject project = provider.newInstance("prj")
+                .with(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.UNSET_IF_UNDEFINED));
+        runWorkflow(project, "attachM3bpBatchapps", "m3bp.perf.average.sort");
+    }
+
+    /**
+     * {@code asakuasfw.sh run} w/ mapreduce.
+     */
+    @Test
+    public void workflow_mapreduce() {
+        AsakusaProject project = provider.newInstance("prj")
+                .with(AsakusaConfigurator.hadoop(AsakusaConfigurator.Action.SKIP_IF_UNDEFINED));
+        runWorkflow(project, "attachMapreduceBatchapps", "perf.average.sort");
+    }
+
     private static void doYaess(AsakusaProject project, String taskName, String batchId) {
         project.gradle(taskName, "installAsakusafw");
 
@@ -199,6 +239,31 @@ public class DistributionTest {
                 .flatMap(Util::lines)
                 .sorted()
                 .collect(Collectors.toList());
+            assertThat(results, containsInAnyOrder(csv));
+        });
+    }
+
+    private static void runWorkflow(AsakusaProject project, String taskName, String batchId) {
+        project.gradle(taskName, "installAsakusafw");
+
+        String[] csv = new String[] {
+                "1,1.0,A",
+                "2,2.0,B",
+                "3,3.0,C",
+        };
+        project.getContents().put("var/data/input/file.csv", f -> {
+            Files.write(f, Arrays.asList(csv), StandardCharsets.UTF_8);
+        });
+
+        project.getFramework().withLaunch(
+                "bin/asakusafw.sh", "run", batchId,
+                "-Ainput=input", "-Aoutput=output");
+
+        project.getContents().get("var/data/output", dir -> {
+            List<String> results = Files.list(dir)
+                    .flatMap(Util::lines)
+                    .sorted()
+                    .collect(Collectors.toList());
             assertThat(results, containsInAnyOrder(csv));
         });
     }
