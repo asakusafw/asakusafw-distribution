@@ -33,6 +33,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.asakusafw.integration.AsakusaConfigurator;
+import com.asakusafw.integration.AsakusaConstants;
 import com.asakusafw.integration.AsakusaProject;
 import com.asakusafw.integration.AsakusaProjectProvider;
 import com.asakusafw.utils.gradle.Bundle;
@@ -142,7 +143,7 @@ public class DistributionTest {
     }
 
     /**
-     * {@code yaess-batch.sh} w/ vanilla.
+     * YAESS w/ vanilla.
      */
     @Test
     public void yaess_vanilla() {
@@ -151,7 +152,7 @@ public class DistributionTest {
     }
 
     /**
-     * {@code yaess-batch.sh} w/ spark.
+     * YAESS w/ spark.
      */
     @Test
     public void yaess_spark() {
@@ -161,7 +162,7 @@ public class DistributionTest {
     }
 
     /**
-     * {@code yaess-batch.sh} w/ m3bp.
+     * YAESS w/ m3bp.
      */
     @Test
     public void yaess_m3bp() {
@@ -170,7 +171,7 @@ public class DistributionTest {
     }
 
     /**
-     * {@code yaess-batch.sh} w/ mapreduce.
+     * YAESS w/ mapreduce.
      */
     @Test
     public void yaess_mapreduce() {
@@ -179,7 +180,7 @@ public class DistributionTest {
     }
 
     /**
-     * {@code asakuasfw.sh run} w/ vanilla.
+     * run w/ vanilla.
      */
     @Test
     public void workflow_vanilla() {
@@ -189,7 +190,7 @@ public class DistributionTest {
     }
 
     /**
-     * {@code asakuasfw.sh run} w/ spark.
+     * run w/ spark.
      */
     @Test
     public void workflow_spark() {
@@ -199,7 +200,7 @@ public class DistributionTest {
     }
 
     /**
-     * {@code asakuasfw.sh run} w/ m3bp.
+     * run w/ m3bp.
      */
     @Test
     public void workflow_m3bp() {
@@ -209,7 +210,7 @@ public class DistributionTest {
     }
 
     /**
-     * {@code asakuasfw.sh run} w/ mapreduce.
+     * run w/ mapreduce.
      */
     @Test
     public void workflow_mapreduce() {
@@ -231,7 +232,7 @@ public class DistributionTest {
         });
 
         project.getFramework().withLaunch(
-                "yaess/bin/yaess-batch.sh", batchId,
+                AsakusaConstants.CMD_YAESS, batchId,
                 "-A", "input=input", "-A", "output=output");
 
         project.getContents().get("var/data/output", dir -> {
@@ -256,7 +257,7 @@ public class DistributionTest {
         });
 
         project.getFramework().withLaunch(
-                "bin/asakusafw.sh", "run", batchId,
+                AsakusaConstants.CMD_PORTAL, "run", batchId,
                 "-Ainput=input", "-Aoutput=output");
 
         project.getContents().get("var/data/output", dir -> {
