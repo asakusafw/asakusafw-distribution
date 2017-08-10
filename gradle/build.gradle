@@ -134,7 +134,3 @@ file('src/templates').eachDirMatch({ it.startsWith 'asakusa-' }) { File source -
     }
     assembleTemplates.dependsOn assembleTaskName
 }
-
-tasks.withType(Wrapper) {
-    jarFile file('.buildtools/gradlew.jar')
-}
