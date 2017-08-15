@@ -59,6 +59,8 @@ dependencies {
     deployerJars 'org.springframework.build:aws-maven:5.0.0.RELEASE'
 }
 
+project.sourceCompatibility = JavaVersion.toVersion('1.8')
+
 eclipse.jdt {
     javaRuntimeName = "JavaSE-${sourceCompatibility}"
 }
