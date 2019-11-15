@@ -2,7 +2,7 @@ group 'com.example'
 
 buildscript {
     repositories {
-        maven { url 'http://asakusafw.s3.amazonaws.com/maven/${mavenRepoType}' }
+        maven { url 'https://asakusafw.s3.amazonaws.com/maven/${mavenRepoType}' }
     }
     dependencies {
         classpath group: 'com.asakusafw.gradle', name: 'asakusa-distribution', version: '${gradlePluginVersion}'
